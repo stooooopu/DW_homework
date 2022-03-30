@@ -28,6 +28,6 @@ WHERE foodNo = 30;
 하지만 레스토랑 테이블에 30번 데이터가 있어서 지울 수가 없다. 
 음식 테이블에 30번 데이터를 지울 방법은 무엇일까?
 답안 작성 => 
-FOREIGN KEY(foodNo) REFERENCES food(foodNo) on delete casecade 를 붙여서
+FOREIGN KEY(음식 번호) REFERENCES food(음식 번호) on delete casecade 를 붙여서
 자식테이블의 데이터도 삭제한다
 */
