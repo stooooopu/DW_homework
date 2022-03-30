@@ -14,7 +14,7 @@
         <input id="name" type="" placeholder="회원이름을 입력해주세요..." />
         <input id="nickName" type="" placeholder="사용할 닉네임을 입력해주세요..." />
         <div class="email-box">
-          <input type="text" placeholder="이메일을 입력해주세요..." />
+          <input id="email" type="text" placeholder="이메일을 입력해주세요..." />
           <span>@</span>
           <select id="emailList">
             <option value="none" selected>직접입력</option>
@@ -30,7 +30,7 @@
         />
         <div class="question-box">
           <span>회원가입에 동의하나요?</span>
-          <input type="checkbox" />
+          <input id="checkBox" type="checkbox" />
         </div>
         <div class="join-btn">
           <button id="sign" type="button">회원 가입</button>
@@ -38,15 +38,16 @@
       </div>
     </div>
     <script
-      src="https://code.jquery.com/jquery-3.6.0.min.js"
-      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-      crossorigin="anonymous"
+    src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+    crossorigin="anonymous"
     ></script>
     <script>
       // 문제 1. 
       //   회원가입 버튼 눌렀을 때, 빈칸 혹은 체크하지 못한 부분이 있다면
       //   '내용을 확인해주세요!'하는 alert을 보여주고 focus 하시오.
       $("#sign").on('click', function(){
+        var jsonParam = {};
         var forms = $(".form-wrapper").children();
         for (var i=0; i<forms.length; i++){
           var elementId = forms[i].id;
@@ -56,7 +57,23 @@
             $('#'+elementId).focus();
             return false;
           }
-          // email만 안먹힘
+          // email만 안먹힘 -> 따로 Id로 빼서 하기
+          var email = $("#email").val().trim();
+          if(email===''){
+            alert('내용을 확인해 주세요');
+            $("#email").focus();
+            return false;
+          };
+          if($("#emailList option:selected").val()==='none'){
+            alert('email을 확인 해 주세요');
+            $("#emailList").focus();
+            return false;
+          };
+          //checkbox
+          if($("#checkBox").is(":checked")===false){
+            alert('체크박스를 확인 해 주세요');
+            return false;
+          };
         };
         // 문제 2.
         // 연락처에 '-'를 작성하면 회원가입 버튼을 눌렀을 때 제거하시오.
@@ -73,15 +90,15 @@
         if(checkName(name) && checkName(nickName)){
           return true;
         }else {alert('한글만 입력해 주세요')}
+        // 문제 4. 
+        // 모든 조건을 만족하고 회원가입 버튼을 누르면
+        // input데이터를 json으로 만들어 console.log에 출력하시오.
+        // jsonParam.name = value를 가져와야 할 것 같은데 어떻게 가져오지
       });
       function checkName(name){
         var regex = /^[가-힣]+$/
         return regex.test(name);
       }
-      
-        // 문제 4. 
-        // 모든 조건을 만족하고 회원가입 버튼을 누르면
-        // input데이터를 json으로 만들어 console.log에 출력하시오.
       
     </script>
   </body>
