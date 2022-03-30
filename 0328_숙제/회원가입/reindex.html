@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="form-wrapper">
+        <h3>스똬벅스 회원가입</h3>
+        <input id="userName" type="" placeholder="회원이름을 입력해주세요..." />
+        <input id="nickName" type="" placeholder="사용할 닉네임을 입력해주세요..." />
+        <div class="email-box">
+          <input id="email" type="text" placeholder="이메일을 입력해주세요..." />
+          <span>@</span>
+          <select id="emailList">
+            <option value="none" selected>직접입력</option>
+            <option value="naver">naver.com</option>
+            <option value="gmail">gmail.com</option>
+            <option value="hanmail">hanmail.net</option>
+            <option value="nate">nate.com</option>
+          </select>
+        </div>
+        <input id="phone"
+          type="text"
+          placeholder="연락처를 입력해주세요...(번호만 입력하세요)"
+        />
+        <div class="question-box">
+          <span>회원가입에 동의하나요?</span>
+          <input id="checkBox" type="checkbox" />
+        </div>
+        <div class="join-btn">
+          <button id="join" type="button">회원 가입</button>
+        </div>
+      </div>
+    </div>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+        // 문제 1. 
+        // 회원가입 버튼 눌렀을 때, 빈칸 혹은 체크하지 못한 부분이 있다면
+        // '내용을 확인해주세요!'하는 alert을 보여주고 focus 하시오.
+        $('#join').on('click',function(){
+          var formsChildren = $('.form-wrapper').children();
+          var jsonData = {};
+          // console.log(formsChildren);
+          for(var i=0; i<formsChildren.length; i++){
+            var elementId = formsChildren[i].id;
+            // console.log(elementId);
+            var elementVal = '';
+            // Id를 불러오는게 #를 붙여야 하니까!!
+            if(formsChildren[i].nodeName==='INPUT'){
+              // elementVal을 위에 선언하고 밑에 대입해주는 이유는
+              // formsChildren안에 input의 value만 확인하고 싶은데, div 등 다양한 태그가 있어서
+              elementVal = $('#'+elementId).val().trim();
+              // 문제 2.
+              // 연락처에 '-'를 작성하면 회원가입 버튼을 눌렀을 때 제거하시오.
+              // ex) 010-4097-0823 -> 01040970823
+                  if(formsChildren[i].id==='phone'){
+                    elementVal = elementVal.replaceAll('-','');
+                    return false;
+                  }; //phone -> 안됨
+                  // 문제 3.
+                  // 회원이름과 닉네임은 20글자 이하고 한글만 사용할 수 있습니다.
+                  if(formsChildren[i].id==='userName' || formsChildren[i].id==='nickName'){
+                    if(elementVal.length>=20){
+                      alert('20글자 이하로 입력해주세요!');
+                      $('#'+elementId).focus();
+                      return false;
+                    };
+                    if(!regex(elementVal)){
+                      alert('한글만 입력해 주세요!');
+                      $('#'+elementId).focus();
+                      return false;
+                    };
+                  }; //name&nickname
+                  if(elementVal===''){
+                    alert('내용을 확인해주세요!');
+                    $('#'+elementId).focus();
+                    return false;
+                  };
+                };
+                // email은 div로 따로 묶여있어서 이렇게 확인
+                var emailVal = $('#email').val();
+                var emailListVal =$('#emailList').val();
+                if(emailVal===''){
+                  alert('이메일을 확인해주세요!');
+                  $('#email').focus();
+                  return false;
+                };
+                if(emailListVal==='none'){
+                  alert('이메일주소를 확인해주세요!');
+                  $('#emailList').focus();
+                  return false;
+                };
+                if($('#checkBox').is(':checked')===false){
+                  alert('체크박스를 확인해주세요!');
+                  $('#checkBox').focus();
+                  return false;
+                };
+                // console.log(elementVal);
+                jsonData[elementId] = elementVal;
+              }; //for end
+              console.log(jsonData);
+        });
+        function regex(name){
+          var regex = /^[가-힣]+$/;
+          return regex.test(name);
+        };
+
+        // 문제 4. 
+        // 모든 조건을 만족하고 회원가입 버튼을 누르면
+        // input데이터를 json으로 만들어 console.log에 출력하시오.
+      
+    </script>
+  </body>
+</html>
