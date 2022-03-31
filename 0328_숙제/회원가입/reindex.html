@@ -52,7 +52,7 @@
           // console.log(formsChildren);
           for(var i=0; i<formsChildren.length; i++){
             var elementId = formsChildren[i].id;
-            
+            // console.log(elementId);
             var elementVal = '';
             // Id를 불러오는게 #를 붙여야 하니까!!
             if(formsChildren[i].nodeName==='INPUT'){
@@ -63,7 +63,7 @@
               // 연락처에 '-'를 작성하면 회원가입 버튼을 눌렀을 때 제거하시오.
               // ex) 010-4097-0823 -> 01040970823
                   if(formsChildren[i].id==='phone'){
-                    elementVal = elementVal.replaceAll('-','');
+                    elementVal = elementVal.replace(/-/gi,'');
                     return false;
                   }; //phone -> 안됨 -> 됨!
                   // 문제 3.
@@ -87,11 +87,10 @@
                   };
                 }; //input end
                 // email은 div로 따로 묶여있어서 이렇게 확인
-                if(formsChildren[i].id==='emailBox'){
-                  elementId = $('#emailBox').children();
-                  // console.log(elementId);
-                  elementVal = elementId.val().trim();
-                if(elementVal===''){
+                if(formsChildren[i].id === 'emailBox'){
+                  console.log(elementId);
+                  var emailBoxChil = $('#emailBox').children();
+                if(emailBoxChil[i].id==='email' && elementVal===''){
                   alert('이메일을 입력해주세요!');
                   $('#email').focus();
                   return false;
@@ -101,17 +100,17 @@
                   elementId.focus();
                   return false;
                 };
+              };
                 if($('#checkBox').is(':checked')===false){
                   alert('체크박스를 확인해주세요!');
                   $('#checkBox').focus();
                   return false;
-                }
                 };
                 // 문제 4. 
                 // 모든 조건을 만족하고 회원가입 버튼을 누르면
                 // input데이터를 json으로 만들어 console.log에 출력하시오.
-                console.log(elementId);
-                console.log(elementVal);
+                // console.log(elementId);
+                // console.log(elementVal);
                 jsonData[elementId] = elementVal;
               }; //for end
               console.log(jsonData);
