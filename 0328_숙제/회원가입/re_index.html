@@ -52,7 +52,7 @@
           // console.log(formsChildren);
           for(var i=0; i<formsChildren.length; i++){
             var elementId = formsChildren[i].id;
-            // console.log(elementId);
+            console.log(elementId);
             var elementVal = '';
             // Id를 불러오는게 #를 붙여야 하니까!!
             if(formsChildren[i].nodeName==='INPUT'){
@@ -65,7 +65,7 @@
                   if(formsChildren[i].id==='phone'){
                     elementVal = elementVal.replace(/-/gi,'');
                     return false;
-                  }; //phone -> 안됨 -> 됨!
+                  }; //phone -> 안됨 -> 됨! ->안됨
                   // 문제 3.
                   // 회원이름과 닉네임은 20글자 이하고 한글만 사용할 수 있습니다.
                   if(formsChildren[i].id==='userName' || formsChildren[i].id==='nickName'){
@@ -86,21 +86,6 @@
                     return false;
                   };
                 }; //input end
-                // email은 div로 따로 묶여있어서 이렇게 확인
-                if(formsChildren[i].id === 'emailBox'){
-                  console.log(elementId);
-                  var emailBoxChil = $('#emailBox').children();
-                if(emailBoxChil[i].id==='email' && elementVal===''){
-                  alert('이메일을 입력해주세요!');
-                  $('#email').focus();
-                  return false;
-                };
-                if($('#emailList option:selected').val()==='none'){
-                  alert('이메일을 입력해주세요!');
-                  elementId.focus();
-                  return false;
-                };
-              };
                 if($('#checkBox').is(':checked')===false){
                   alert('체크박스를 확인해주세요!');
                   $('#checkBox').focus();
@@ -109,10 +94,22 @@
                 // 문제 4. 
                 // 모든 조건을 만족하고 회원가입 버튼을 누르면
                 // input데이터를 json으로 만들어 console.log에 출력하시오.
-                // console.log(elementId);
-                // console.log(elementVal);
+                console.log(elementVal);
                 jsonData[elementId] = elementVal;
               }; //for end
+                // email은 div로 따로 묶여있어서 이렇게 확인
+                var email = $('#email');
+                if(email.val()===''){
+                  alert('이메일을 입력해주세요!');
+                  $('#email').focus();
+                  return false;
+                };
+                if($('#emailList option:selected').val()==='none'){
+                  alert('이메일을 입력해주세요!');
+                  $('#emailList').focus();
+                  return false;
+                };
+                // jsonData[$('#emailBox')] = $('#emailBox').val();
               console.log(jsonData);
         }); //function end
         function regex(name){
