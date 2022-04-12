@@ -27,7 +27,7 @@
               <h6>참다랑어 뱃살</h6>
               <p>숙성 : <span>8일 숙성</span></p>
               <p>가격 : <span>22,000</span></p>
-              <a href="#">담기</a>
+              <a id="fattyTuna8" href="#">담기</a>
             </div>
           </div>
           <div class="menu">
@@ -36,7 +36,7 @@
               <h6>참다랑어 뱃살</h6>
               <p>숙성 : <span>2일 숙성</span></p>
               <p>가격 : <span>10,000</span></p>
-              <a href="#">담기</a>
+              <a id="fattyTuna2" href="#">담기</a>
             </div>
           </div>
           <div class="menu">
@@ -45,7 +45,7 @@
               <h6>참다랑어 등살</h6>
               <p>숙성 : <span>3일 숙성</span></p>
               <p>가격 : <span>12,000</span></p>
-              <a href="#">담기</a>
+              <a id="fattyTuna3" href="#">담기</a>
             </div>
           </div>
           <div class="menu">
@@ -54,7 +54,7 @@
               <h6>참다랑어 뱃살</h6>
               <p>숙성 : <span>5일 숙성</span></p>
               <p>가격 : <span>16,000</span></p>
-              <a href="#">담기</a>
+              <a id="fattyTuna5" href="#">담기</a>
             </div>
           </div>
           <div class="menu">
@@ -63,15 +63,15 @@
               <h6>참다랑어 스페셜 세트</h6>
               <p>숙성 : <span>5일 숙성</span></p>
               <p>가격 : <span>32,000</span></p>
-              <a href="#" style="color: red">품절</a>
+              <a id="specialSet" href="#" style="color: red">품절</a>
             </div>
           </div>
         </div>
       </div>
       <div class="footer">
         <div class="order">
-          <button type="button">결제하기</button>
-          <p>총 주문 금액 : <span>0</span></p>
+          <button id="order" type="button">결제하기</button>
+          <p>총 주문 금액 : <span id="totalMoney">0</span></p>
         </div>
       </div>
     </div>
@@ -81,12 +81,6 @@
       crossorigin="anonymous"
     ></script>
     <script>
-      var count = 0;
-      var totalSum = 0;
-      // 1번 문제: 전체 메뉴, 오늘의 메뉴, 베스트 메뉴를 클릭하게 되면
-      // 클릭한 메뉴에 아래 css를 적용할 것
-      // background-color: #ffffff;
-      // color: #4e4e4e;
       $('.nav ul li').on('click',function(event){
         // click했을 때 발생하는 event
         console.log(event);
@@ -100,41 +94,102 @@
             $(item).css('backgroundColor', '#ffffff');
             $(item).css('color', '#4e4e4e');
           }
-          if(elementInnerHTML !== menuName){
+          if(elementInnerText !== menuName){
             $(item).css('backgroundColor', '#c24040');
             $(item).css('color', '#fff');
           }
         });
-      });
+      }); // end 1번문제
+
+      //-----------------------------------------------------------------------
       
+      // 2번 : 메뉴담기 클릭 -> 총 주문금액에 가격 표기 (참다랑어 제외)
+      // 4번 : 총 주문금액<=10만원
+      // 5번 : 참다랑어 클릭 -> alert '참다랑어는 품절'
+
       // 전역 배열 변수
-      var myMenuArray = new Array();
-      $('.menu-info a').on('click',function(event){
+      var menuArray = new Array(); // 메뉴 클릭했을 때 담을 배열
+
+      $('.menu-info a').on('click',function(event){ // 메뉴 a tag 클릭했을 때
         // 참다랑어세트를 눌렀을 때
-        event.preventDefault();
-        var elementInnerText = event.target.innerHTML; //내가 클릭한 메뉴
+        event.preventDefault(); // 기본으로 정의된 이벤트 작동 못하게 함
+        var elementInnerText = event.target.innerText; //내가 클릭한 메뉴
         if(elementInnerText === '품절'){
           alert('죄송합니다. 참다랑어 세트는 품절입니다.');
           return false;
         }
+        var elementId = event.target.id;
+        setTotalMoney(elementId);
+      }); // end 5번문제
+
+      
+      var sumMoney = 0; // 토탈금액
+      // 총 주문금액 계산 함수
+      function setTotalMoney(elementId){ // 참다랑어 제외(if로 거름) 다른 메뉴id를 파라미터로 받음
+        // 내가 누른 메뉴의 이전요소0번째의 0번자식의 innerText 
+        // ???????
+        var elementChildrenInnerText = $('#'+elementId).prev()[0].children[0].innerText;
+        var money = Number(elementChildrenInnerText.replace(',',''));
+        // Number 텍스트>int
+        if((sumMoney + money) <= 100000){
+          sumMoney += money;
+          // id = totalMoney에 sumMoney데이터로 대체
+          $('#totalMoney').text(sumMoney);
+          setMenuArray(elementId); // 내가 선택한 메뉴 id를 파라미터로 보냄
+        }
+      }; // end 2, 4번문제
+
+      // 선택한 메뉴 배열에 담기
+      function setMenuArray(elementId){ //파라미터로 선택한 id를 받음
+        // a태그의 부모 > div.menu-info 의 0번째 자식>h6(메뉴이름)
+        var menu = $('#'+elementId).parent().children()[0].innerText;
+        // a태그의 부모 > div.menu-info 의 자식 > 0번째 자식 > 숙성일
+        // 왜 children()[1].children()[0]을 안해도 숙성일이 체크되는지????
+        // 가격도 span자식이 있는데??
+        var days = $('#'+elementId).parent().children().children()[0].innerText;
+        var menuName = menu+days; // 메뉴이름 + 숙성일
+        console.log(days) 
+        menuArray.push(menuName); // 메뉴이름 + 숙성일을 배열에 넣기
+      }; // end 
+
+      // 최종 선택한 메뉴 보여주기
+      function getMenuArray(){
+        // reduce : 줄이다
+        // 배열 안에서 중복되는 값들을 count 해야 하는 상황  
+        // 배열.reduce( ( 누적값, 현재값, 인덱스, 요소 ) =>
+        // {
+        // 	return 결과
+        //  }, 초깃값);
+        const RESULT = menuArray.reduce(function(acc, cur){ // (누적값, 현재값)
+          if(acc[cur]){ //중복 선택메뉴는 카운팅> 누적값 배열 안에 현재값이 들어간다면
+            acc[cur]++;
+          }else{
+            acc[cur]=1;
+          }
+          return acc;
+        },{}) // {} : initialValue 이게 왜 한 번 더 들어가는지????
+        // 초기값을 {}를 넣어야 결과를 json으로 받음
+        return RESULT;
+      }
+
+      $('#order').on('click',function(){
+        var money = $('#totalMoney').text(); // 위에 totalMoney에는 총 합계가 대체되어 들어가있음
+        if(money == 0){
+          alert('메뉴를 선택하세요');
+          return false;
+        }
+        var selectedMenu = ''; //선택한 메뉴
+        var result = getMenuArray(); //최종 선택한 메뉴배열 담기
+        var key = Object.keys(result); //json key가져옴
+        key.forEach(function(element){
+          selectedMenu += element+' '+result[element]+'개';
+        });
+        console.log(result);
+        // element = count
+        confirm('주문한 참치는 '+selectedMenu+'입니다 주문하시겠습니까?')
+
       });
 
-
-
-
-      // 2번 문제: 메뉴 담기를 클릭하면 총 주문 금액에 가격 표기할 것
-      // 단, 참다랑어 세트는 품절이기 때문에 총 주문 금액에 포함될 수 없다.
-      // 3번 문제: 결제하기를 눌렀을 때 총 주문 금액이 0원 이면 
-      // '메뉴를 선택하세요!'라는 alert창 띄우기
-
-      // 4번 문제: 총 주문 금액은 10만원을 넘을 수 없다.
-
-      // 5번 문제: 참다랑어 세트를 클릭하면 
-      // '죄송합니다. 참다랑어 세트는 품절입니다.'라는 alert창 띄우기
-
-      // 6번 문제: 모든 조건을 만족하면 
-      // '주문한 참치는 참다랑어 뱃살 8일 숙성 2개, 참다랑어 등살 3일 숙성1개 입니다.
-      // 주문하시겠습니까?' 라는 confirm창 띄우기
 
     </script>
   </body>
