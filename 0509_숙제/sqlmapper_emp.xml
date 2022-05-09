@@ -41,6 +41,14 @@
 		SAL 
 	from emp 
 	where date_format(HIREDATE ,'%m') = #{month} 
+	<!-- 또는 query로만 
+		select
+		ENAME , 
+		SAL 
+		from emp 
+		where date_format(HIREDATE ,'%m') = 12
+		order by SAL desc 
+		limit 1 -->
 	</select>
 	
 	<!-- 문제 4. 특정 job에 속한 사원번호, 사원 이름, 입사날짜 조회 -->
@@ -56,7 +64,27 @@
 	</select>
 	
 	<!-- 문제 5. 특정 사원의 모든 정보 조회(emp, dept 테이블 조인) -->
-	<select id="getEmpnoAllData" resultType="EmpVO">
+	
+	<resultMap type="DeptVO" id="DeptVO">
+		<result column="deptno" property="deptno"/>
+		<result column="dname" property="dname"/>
+		<result column="LOC" property="LOC"/>
+	</resultMap>
+	
+	<resultMap type="EmpVO" id="EmpVO">
+		<result column="empno" property="empno"/>
+		<result column="ename" property="ename"/>
+		<result column="job" property="job"/>
+		<result column="mgr" property="mgr"/>
+		<result column="hiredate" property="hiredate"/>
+		<result column="sal" property="sal"/>
+		<result column="comm" property="comm"/>
+		<result column="deptno" property="deptno"/>
+		<!-- 먼저 join할 table을 필드변수로 선언해 줘야함 -->
+		<collection property="deptVo" resultMap="DeptVO"/>
+	</resultMap>
+	
+	<select id="getEmpnoAllData" parameterType="EmpVO" resultMap="EmpVO">
 	select
 		*
 	from emp as e
